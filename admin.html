@@ -25,10 +25,12 @@
                 console.log(data,roomID);
               });
                this.socket.on('studentJoinRoom', function (user,users) {
+
                  $('#users').empty();
                  $.each(users,function(k,v){
                     $('#users').append($('<p/>').html(v));
                  })
+                  $('#gameWrap').show();
                 
               });
            
@@ -73,12 +75,13 @@
 <input id='room' placeholder="room name" value='room1'><br>
 <input id='userName' placeholder="user name" value='admin'><br>
 <button id= 'joinBtn'>join room</button>
-<div>
+</div>
   <div id='users'></div>
 <hr>
+<div id='gameWrap' style='display:none'>
 <button id= 'gameStart'>game start</button>
-<hr>
+</div>
 <button id= 'getRoomInfo'>getRoomInfo</button>
-    <div>This is our socket.html file</div>
+ 
   </body>
 </html>
