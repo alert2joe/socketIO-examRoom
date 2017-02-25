@@ -1,0 +1,68 @@
+
+<html>
+  <head>
+
+      <script src="/socket.io/socket.io.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script>
+      var StudentClient = function(){
+          this.socket;
+          var that = this;
+          this.init = function(){
+              this.socket = io.connect('http://localhost:8123');
+              this.socketEvent();
+              this.btnAct();
+          }
+          this.socketEvent = function(){
+               this.socket.on('connect', function () {
+                  $('#joinForm').show();
+               });
+           
+          this.socket.on('gameInfo', function (data) {
+                console.log(data);
+              });
+
+
+              this.socket.on('HeartBet', function (data) {
+                //console.log(data);
+              });
+
+              this.socket.on('gameStart', function (data) {
+                console.log(data);
+                $('body').append('<div />').html('gameStartAt:'+data.gameStartTime);
+              });
+
+          }
+          this.joinRoom= function(room,userName){
+              
+              that.socket.emit('join', room,userName);
+               
+          }
+          this.btnAct = function(){
+                $('button').click(function(){
+                      that.joinRoom($('#room').val(),$('#userName').val());
+                })
+
+          }
+
+      }
+      $(function(){
+          studentClient = new StudentClient();
+          studentClient.init();
+
+      })
+
+
+
+      </script>
+  </head>
+  <body>
+<div id='joinForm' style='display:none'>
+    <input id='room' placeholder="room name" value='room1'><br>
+    <input id='userName' placeholder="user name" value='joe'><br>
+    <button>join room</button>
+<div>
+
+    <div>This is our socket.html file</div>
+  </body>
+</html>

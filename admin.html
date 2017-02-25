@@ -1,0 +1,84 @@
+
+<html>
+  <head>
+
+      <script src="/socket.io/socket.io.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script>
+      var StudentClient = function(){
+          this.socket;
+          var that = this;
+          this.init = function(){
+              this.socket = io.connect('http://localhost:8123');
+              this.btnAct();
+              this.socketEvent();
+          }
+          this.socketEvent = function(){
+               this.socket.on('connect', function () {
+                  $('#joinForm').show();
+               });
+             this.socket.on('HeartBet', function (data) {
+                //console.log(data);
+              });
+
+              this.socket.on('adminMsg', function (data,roomID) {
+                console.log(data,roomID);
+              });
+               this.socket.on('studentJoinRoom', function (user,users) {
+                 $('#users').empty();
+                 $.each(users,function(k,v){
+                    $('#users').append($('<p/>').html(v));
+                 })
+                
+              });
+           
+
+              this.socket.on('RoomInfo', function (data) {
+                   console.log(data);
+              });
+          }
+          this.joinRoom= function(room,userName){
+
+              that.socket.emit('join', room,userName,1);
+ 
+          }
+          this.btnAct = function(){
+                $('#joinBtn').click(function(){
+                    that.joinRoom($('#room').val(),$('#userName').val());
+                })
+
+                $('#gameStart').click(function(){
+                      that.socket.emit('gameStart');    
+                })
+
+                $('#getRoomInfo').click(function(){
+                      that.socket.emit('getRoomInfo');    
+                })
+          }
+
+      }
+      $(function(){
+          studentClient = new StudentClient();
+          studentClient.init();
+
+      })
+
+
+
+      </script>
+  </head>
+  <body>
+    <h1>admin</h1>
+<div id='joinForm' style='display:none'>
+<input id='room' placeholder="room name" value='room1'><br>
+<input id='userName' placeholder="user name" value='admin'><br>
+<button id= 'joinBtn'>join room</button>
+<div>
+  <div id='users'></div>
+<hr>
+<button id= 'gameStart'>game start</button>
+<hr>
+<button id= 'getRoomInfo'>getRoomInfo</button>
+    <div>This is our socket.html file</div>
+  </body>
+</html>
