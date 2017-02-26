@@ -1,0 +1,84 @@
+
+<html>
+  <head>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+
+      <script>
+      var socketIO = new (function(){
+            this.socket 
+            this.EmitCounter = 0;
+            this.timeoutOffset = 1000;
+            this.resultList = [];
+            this.init = function(io){
+                this.socket = io.connect('http://localhost:8123');
+                this.socket.on('connect', function () {
+                          this.connectCallBack();
+                 }.bind(this));
+            }
+
+            this.connectCallBack = function(){
+                this.socket.on('returnResult', function (state,data,UUID) {
+                        this.resultList[UUID](state,data,UUID);
+                        this.resultList[UUID] = null;
+                 }.bind(this));
+            }
+
+            this.sendEmit = function(key,params,fn){
+                var UUID = this._UUID();
+               this.socket.emit(key, params,UUID);
+                this.resultList[UUID] = fn;
+
+                setTimeout(
+                    function(){ 
+                        if( this.resultList[UUID] ){
+                            this.resultList[UUID]('Timeout',null,UUID);
+                        }
+                    }.bind(this), this.timeoutOffset );
+            }
+
+            this._UUID = function() { // Public Domain/MIT
+                this.EmitCounter++;
+                return 'EmitCounter'+this.EmitCounter;
+            }
+      })
+      socketIO.init(io);
+
+      $(function(){
+
+        $('#joinBtn')
+            .click(function () {
+               var params = {}
+               socketIO.sendEmit('noResponse',params,function(state,data,UUID){
+                    console.log(state)
+               })
+            })
+
+      })
+/**server
+ * 
+    this.socket.on('join', function(params,UUID) {
+            this.emitCallBack('returnData',UUID);
+        }.bind(this));
+
+    this.emitCallBack = function(data,UUID){
+        this.socket.emit('returnResult','done',data,UUID );
+    }    
+ * 
+ * 
+ * 
+ * 
+ * **/
+    
+      
+      </script>
+  </head>
+  <body>
+
+    <button id='joinBtn' >join</button>
+
+      
+  </body>
+</html>
