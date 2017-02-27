@@ -2,11 +2,11 @@ function MyServ(socket,roomList){
     this.roomList = roomList;
     this.socket = socket;
     this.startTime= new Date().getTime()
-    this.heartBetCount = 0;
+    this.heartBeatCount = 0;
     this.isAdmin;
     this.user;
     this.init=() =>{
-        this.emitHeartBet();
+        this.emitHeartBeat();
         this.waitForGameStart();
         this.roomLogic();
     };
@@ -49,7 +49,6 @@ function MyServ(socket,roomList){
                 var room = that.roomList[that.roomID];
               
                 room.adminSocket.emit('RoomInfo', {
-                    abc:123,
                     user:room.user,
                     info:room.info
                 });
@@ -77,16 +76,16 @@ function MyServ(socket,roomList){
             });
         }
 
-    this.emitHeartBet= () => {
+    this.emitHeartBeat= () => {
             
              setInterval(function(){
                  var timeStamp = new Date().getTime();
                  var duration =  timeStamp -this.startTime;
                  
-                 this.socket.emit('HeartBet', {
+                 this.socket.emit('HeartBeat', {
                      timeStamp:timeStamp,
                       duration : duration,
-                      heartBetCount : this.heartBetCount++
+                      heartBeatCount : this.heartBeatCount++
                 });
                  }.bind(this), 1000);
     }

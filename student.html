@@ -2,8 +2,9 @@
 <html>
   <head>
 
-      <script src="/socket.io/socket.io.js"></script>
+  
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
       <script>
       var StudentClient = function(){
           this.socket;
@@ -23,8 +24,9 @@
               });
 
 
-              this.socket.on('HeartBet', function (data) {
+              this.socket.on('HeartBeat', function (data) {
                 //console.log(data);
+                $('#HeartBeatMsg').html(data.timeStamp)
               });
 
               this.socket.on('gameStart', function (data) {
@@ -63,6 +65,8 @@
     <button>join room</button>
 </div>
 
+<div id='HeartBeatMsg'>
+</div>
 
   </body>
 </html>
