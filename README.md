@@ -3,7 +3,7 @@
 - cmd
 - npm install
 - node server.js
-- http://localhost:8123/student.html
-- http://localhost:8123/admin.html
+- local open student.html
+- local open admin.html
 
 
